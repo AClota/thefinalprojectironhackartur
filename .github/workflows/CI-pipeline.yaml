@@ -34,7 +34,7 @@ jobs:
 
       - name: Build with Docker Compose
         run: |
-          ddocker-compose up -d
+          docker-compose up -d
 
       - name: Push Docker images
         run: |
