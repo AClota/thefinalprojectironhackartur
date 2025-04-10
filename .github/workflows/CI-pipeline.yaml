@@ -32,9 +32,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push images with Docker Compose
+      - name: Build with Docker Compose
         run: |
-          docker-compose -f docker-compose.yml build
+          ddocker-compose up -d
 
       - name: Push Docker images
         run: |
