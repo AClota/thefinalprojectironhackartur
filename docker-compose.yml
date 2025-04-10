@@ -5,6 +5,7 @@ services:
   backend:
     build:
       context: ./expensy_backend
+    image: expensy_backend
     environment:
       - DATABASE_URI=mongodb://mongo:mongo@mongo:27017/?authSource=admin
       - REDIS_HOST=redis
@@ -22,6 +23,7 @@ services:
   frontend:
     build:
        context: ./expensy_frontend
+    image: expensy_frontend
     environment:
       - NEXT_PUBLIC_API_URL=http://backend:8707  # API URL for frontend to communicate with backend
     ports:
