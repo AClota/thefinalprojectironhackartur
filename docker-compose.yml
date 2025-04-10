@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  # Backend Service (Node.js)
+  backend:
+    build:
+      context: ./expensy_backend
+    image: expensy_backend
+    environment:
+      - DATABASE_URI=mongodb://mongo:mongo@mongo:27017/?authSource=admin
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=redis
+    ports:
+      - "8707:8706"   # Expose backend on port 8707
+    depends_on:
+      - redis           # Ensure Redis is available before starting the backend
+      - mongo           # Ensure MongoDB is available before starting the backend
+    networks:
+      - expensy
+
+  # Frontend Service (Next.js)
+  frontend:
+    build:
+       context: ./expensy_frontend
+    image: expensy_frontend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8707  # API URL for frontend to communicate with backend
+    ports:
+      - "3002:3000"     # Expose frontend on port 3002
+    depends_on:
+      - backend         # Ensure the backend is up before starting the frontend
+    networks:
+      - expensy
+
+  # Redis Service
+  redis:
+    image: redis
+    environment:
+      - REDIS_PASSWORD=redis
+    ports:
+      - "6379:6379"     # Expose Redis on port 6379
+    networks:
+      - expensy
+
+  # MongoDB Service
+  mongo:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=mongo
+    ports:
+      - "27017:27017"   # Expose MongoDB on port 27017
+    networks:
+      - expensy
+
+# Define a custom network for the services
+networks:
+  expensy:
+    driver: bridge
