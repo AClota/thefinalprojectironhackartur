@@ -15,8 +15,8 @@ jobs:
     env:
       IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
       REGISTRY: docker.io
-      IMAGE_FRONTEND: ${{ secrets.DOCKER_USERNAME }}/expensy_frontend
-      IMAGE_BACKEND: ${{ secrets.DOCKER_USERNAME }}/expensy_backend
+      IMAGE_FRONTEND: ${{ secrets.DOCKERHUB_USERNAME }}/expensy_frontend
+      IMAGE_BACKEND: ${{ secrets.DOCKERHUB_USERNAME }}/expensy_backend
 
     steps:
       - name: Check out repository
@@ -27,7 +27,7 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
-      - name: Set up Docker Compose
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Login to Docker Hub
@@ -36,10 +36,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push with Docker Compose
+      - name: Build and tag Docker images
         run: |
           docker-compose build
 
+          echo "Tagging and pushing images..."
           docker tag expensy_frontend:latest $IMAGE_FRONTEND:$IMAGE_TAG
           docker tag expensy_backend:latest $IMAGE_BACKEND:$IMAGE_TAG
 
