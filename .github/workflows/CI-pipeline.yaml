@@ -42,7 +42,15 @@ jobs:
 
           echo "Tagging and pushing images..."
           docker tag expensy_frontend:latest $IMAGE_FRONTEND:$IMAGE_TAG
-          docker tag expensy_backend:latest $IMAGE_BACKEND:$IMAGE_TAG
+          docker tag expensy_backend:latest $IMAGE_FRONTEND:latest
 
           docker push $IMAGE_FRONTEND:$IMAGE_TAG
+          docker push $IMAGE_FRONTEND:latest
+
+          docker tag expensy_backend:latest $IMAGE_BACKEND:$IMAGE_TAG
+          docker tag expensy_backend:latest $IMAGE_BACKEND:latest
+
+
           docker push $IMAGE_BACKEND:$IMAGE_TAG
+          docker push $IMAGE_BACKEND:latest
+
