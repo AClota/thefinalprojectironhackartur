@@ -13,10 +13,10 @@ RUN npm install
 COPY . .
 
 # Set default environment variables for both the Redis and MongoDB connection
-ENV DATABASE_URI=mongodb://mongo:mongo@mongo:27017/?authSource=admin
-ENV REDIS_HOST=redis
-ENV REDIS_PORT=6379
-ENV REDIS_PASSWORD=redis
+ENV DATABASE_URI=""
+ENV REDIS_HOST=""
+ENV REDIS_PORT=""
+ENV REDIS_PASSWORD=""
 
 
 # expose the app port 
