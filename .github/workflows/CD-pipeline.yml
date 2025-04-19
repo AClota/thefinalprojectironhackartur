@@ -48,8 +48,8 @@
             
             - name: Replace IMAGE_TAG in manifests
               run: |
-                sed "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/frontend.yml.tpl > k8s/frontend.yml
-                sed "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/backend.yml.tpl > k8s/backend.yml
+                sed "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/frontend.tpl.yml > k8s/frontend.yml
+                sed "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/backend.yml.yml > k8s/backend.yml
             
     
             - name: Deploy workloads to AKS in expensy namespace
