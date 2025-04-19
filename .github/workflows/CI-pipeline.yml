@@ -27,10 +27,17 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }} # format: http://<backend-service-name>:<backend-port>/api/expenses
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/expensy-frontend:latest ./expensy_frontend --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/expensy-backend:latest ./expensy_backend
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/expensy-frontend:${IMAGE_TAG} -t ${{ secrets.DOCKERHUB_USERNAME }}/expensy-frontend:latest ./expensy_frontend \
+            --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/expensy-backend:${IMAGE_TAG} -t ${{ secrets.DOCKERHUB_USERNAME }}/expensy-backend:latest ./expensy_backend
+      
 
+      # Push both tags for frontend & backend
       - name: Push Docker images
-        run: |
+        run: |  
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/expensy-frontend:${IMAGE_TAG}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/expensy-frontend:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/expensy-backend:${IMAGE_TAG}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/expensy-backend:latest
+
+      
