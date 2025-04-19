@@ -11,6 +11,12 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(httpMetricsMiddleware);
+
+// Redirect /api to /api/expenses
+app.get('/api', (req, res) => {
+    res.redirect('/api/expenses');
+  });
+  
 app.use('/api', expenseRoutes);
 
 client.collectDefaultMetrics();
