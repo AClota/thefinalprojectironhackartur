@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend-container
-          image: najjaved/expensy-backend:latest
+          image: najjaved/expensy-backend:__IMAGE_TAG__
           imagePullPolicy: Always
           ports:
             - containerPort: 8706

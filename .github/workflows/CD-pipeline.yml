@@ -42,6 +42,15 @@
 
             - name: Verify cluster access
               run: kubectl get nodes
+
+            - name: Set IMAGE_TAG from Git ref
+              run: echo "IMAGE_TAG=${{ github.ref_type == 'tag' && github.ref_name || github.sha }}" >> $GITHUB_ENV
+            
+            - name: Replace IMAGE_TAG in manifests
+              run: |
+                sed "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/frontend.yml.tpl > k8s/frontend.yml
+                sed "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/backend.yml.tpl > k8s/backend.yml
+            
     
             - name: Deploy workloads to AKS in expensy namespace
               run: |
