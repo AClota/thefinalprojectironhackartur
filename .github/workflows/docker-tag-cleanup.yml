@@ -1,0 +1,35 @@
+# This workflow can also be triggered manually via the "Run workflow" button (workflow_dispatch)
+name: Docker Tag Cleanup
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'  # Every Monday at 3 AM
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old tags from Docker Hub
+        run: |
+          REPO_LIST=("expensy-frontend" "expensy-backend")
+          KEEP=5  # Number of tags to keep
+
+          for repo in "${REPO_LIST[@]}"; do
+            echo "Cleaning up tags for: $repo"
+
+            TAGS=$(curl -s -u ${{ secrets.DOCKERHUB_USERNAME }}:${{ secrets.DOCKERHUB_TOKEN }} \
+              "https://hub.docker.com/v2/repositories/${{ secrets.DOCKERHUB_USERNAME }}/$repo/tags/?page_size=100" \
+              | jq -r '.results | sort_by(.last_updated) | reverse | .[].name')
+
+            COUNT=0
+            for tag in $TAGS; do
+              if [[ "$tag" == "latest" ]]; then continue; fi
+              COUNT=$((COUNT+1))
+              if [ $COUNT -gt $KEEP ]; then
+                echo "Deleting tag: $tag"
+                curl -s -X DELETE -u ${{ secrets.DOCKERHUB_USERNAME }}:${{ secrets.DOCKERHUB_TOKEN }} \
+                  "https://hub.docker.com/v2/repositories/${{ secrets.DOCKERHUB_USERNAME }}/$repo/tags/$tag/"
+              fi
+            done
+          done

@@ -39,3 +39,24 @@ To enable GitHub Actions to build, test, and deploy your app securely, you need 
   "galleryEndpointUrl": "https://gallery.azure.com/",
   "managementEndpointUrl": "https://management.core.windows.net/"
 }
+```
+
+## Dynamic Image Tagging
+
+Tag docker images dynamically so that each build is uniquely tagged based on either:
+1. the Git tag name (if you're pushing a tag), or
+2. the Git commit SHA (if you're pushing to a branch).
+
+
+If you push a tag (e.g., v1.0.0), images will be pushed as:</br>
+```
+yourusername/expensy-frontend:v1.0.0
+yourusername/expensy-backend:v1.0.0
+```
+
+If you push a commit to a branch, it will use the commit SHA:</br>
+```
+yourusername/expensy-frontend:9e403af...
+yourusername/expensy-backend:9e403af...
+```
+
