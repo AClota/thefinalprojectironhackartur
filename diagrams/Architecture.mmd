@@ -1,0 +1,52 @@
+---
+config:
+  theme: base
+  themeVariables:
+    clusterBkg: '#f5f5f5'
+---
+flowchart TD
+ subgraph Expensy["expensy Namespace"]
+        Backend["Backend (pod+svc)"]
+        Frontend["Frontend (pod+svc)"]
+        Redis["Redis (sts+svc)"]
+        MongoDB["MongoDB (sts+svc)"]
+        IngressController["Ingress Controller (nginx)"]
+        Ingress["Ingress Resource"]
+  end
+ subgraph Monitoring["monitoring Namespace"]
+        Prometheus["Prometheus"]
+        NodeMetrics["NodeMetrics"]
+        Grafana["Grafana"]
+  end
+ subgraph AKS_Cluster["AKS Cluster (1 Node)"]
+        Expensy
+        Monitoring
+  end
+    ExternalUser["Browser"] -.-> Ingress
+    Frontend --> Backend
+    Backend --> Redis & MongoDB
+    Prometheus -- ServiceMonitor --> Backend
+    Prometheus -- Node Exporter --> NodeMetrics
+    Grafana -- Dashboards --> Prometheus
+    Ingress -. / .-> Frontend
+    Ingress -. /expensy .-> Frontend
+    Ingress -. /api .-> Backend
+    ExternalUser@{ shape: rounded}
+     Backend:::microservice
+     Frontend:::microservice
+     Redis:::database
+     MongoDB:::database
+     IngressController:::ingress
+     Ingress:::ingress
+     Prometheus:::monitoringTool
+     Grafana:::monitoringTool
+    classDef microservice fill:#ffffff,stroke:#333
+    classDef database fill:#FFCDD2,stroke:#F44336
+    classDef ingress fill:#C8E6C9,stroke:#4CAF50
+    classDef monitoringTool fill:#E3F2FD,stroke:#1976D2
+    style Expensy fill:#00C853,stroke:#FFA000,stroke-width:2px,color:#FF6D00
+    style Monitoring fill:#BBDEFB,stroke:#2196F3,stroke-width:2px,color:#2962FF
+    style AKS_Cluster stroke:#2962FF
+    linkStyle 7 stroke:#00C853,fill:none
+    linkStyle 8 stroke:#00C853,fill:none
+    linkStyle 9 stroke:#2962FF,fill:none

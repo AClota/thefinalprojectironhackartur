@@ -1,0 +1,18 @@
+architecture-beta
+    group aksCluster(cloud)[AKS Cluster node]
+    group aksClusterNode(cloud)[Ingress]
+    
+    service ingress(internet)[Ingress] in aksClusterNode
+    service frontend(server)[NextJS Frontend] in aksCluster
+    service backend(server)[ExpressJS Backend] in aksCluster
+    service redis(disk)[Redis] in aksCluster
+    service mongodb(database)[MongoDB] in aksCluster
+
+    ingress:R -- L:frontend
+    ingress:R -- L:backend
+
+    frontend:R -- L:backend
+    backend:R -- L:redis
+    backend:R -- L:mongodb
+
+    

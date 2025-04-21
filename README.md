@@ -1,5 +1,5 @@
 <!-- Final Project: End-to-End DevOps Deployment -->
-# 💸 DevOPs Implementation for Expensy - Expense Tracker App
+# 💸 DevOps Implementation for Expensy - Expense Tracker App
 
 Expensy is a full-stack expense tracking application built with **Next.js** (frontend) and **Node.js/Express** (backend), containerized with **Docker**, deployed to **Kubernetes (EKS/AKS)**, and integrated with **Prometheus/Grafana** for monitoring.
 
