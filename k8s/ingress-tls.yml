@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: expensy-ingress-test2
+  name: expensy-ingress-tls
   namespace: expensy
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -12,8 +12,7 @@ spec:
   tls:
   - hosts:
     - najhack.online
-    - api.najhack.online
-    secretName: expensy-tls-cert-new  # cert is stored in a Kubernetes secret 
+    secretName: expensy-tls-cert  # cert is stored in a Kubernetes secret 
   rules:
     - host: najhack.online
       http:
@@ -25,9 +24,6 @@ spec:
                 name: frontend-service
                 port:
                   number: 3000
-    - host: api.najhack.online
-      http:
-        paths:
           - path: /api
             pathType: Prefix
             backend:
