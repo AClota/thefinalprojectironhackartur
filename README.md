@@ -18,7 +18,7 @@ Set up the entire DevOps cycle for an expense tracking Web Application using acq
 2. Design and implement a CI/CD pipeline using GitHub Actions to automate application delivery
 3. Containerize frontend and backend services using Docker
 4. Deploy and orchestrate containerized applications using Kubernetes on Azure Kubernetes Service (AKS) or EKS.
-5. Configure NGINX Ingress for routing external HTTP(S) traffic to microservices
+5. Configure NGINX Ingress for routing external HTTPS traffic to internal microservices, secured with TLS certificates.
 6. Set up real-time monitoring and dashboards using Prometheus and Grafana
 7. Version control project Architecture diagrams (optional)
 <br>
@@ -161,8 +161,8 @@ Cluster nodes and Container logs are available in **Azure Monitor** (AKS).
 - Secrets are managed via Kubernetes Secrets
 - IAM roles used for cloud services access following principle of least privilege (PoLP)
 - CI/CD uses Github secrets to store sensitive information
-- Deployed project is accessed via Https using trusted certificate issued via Cert Bot/ Cert manager (works only with proper domain names from hostinger, namecheap etc.)
-See ```SECURITY.md``` for more
+- The deployed project is accessible over HTTPS using a trusted SSL certificate issued via Certbot and renewed automatically using scheduled Cron jobs.
+See ```SECURITY.md``` for details.
 
 ---
 ### Links
