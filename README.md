@@ -1,5 +1,5 @@
 <!-- Final Project: End-to-End DevOps Deployment -->
-# 💸 Expensy - Expense Tracker App
+# 💸 DevOPs Implementation for Expensy - Expense Tracker App
 
 Expensy is a full-stack expense tracking application built with **Next.js** (frontend) and **Node.js/Express** (backend), containerized with **Docker**, deployed to **Kubernetes (EKS/AKS)**, and integrated with **Prometheus/Grafana** for monitoring.
 
@@ -176,4 +176,16 @@ Sample visualizations and alerting setup is included.
   Mongo/Redis passwords never committed
   See ```SECURITY.md``` for more
 
+## Links
+### Deployed App: [Expensy App Deployment on Aks cluster](http://20.233.201.212/)
+
+### Infrastructure Monitoring: [Grafana Dashboard to visualize Nodes Metrics](http://74.162.96.12/d/beiyxmcdom58gb/dashboard-expensy-nodes?orgId=1&from=now-6h&to=now&timezone=browser)
+
+### Backend Monitoring: [Grafana Dashboard to visualize Backend Metrics](http://74.162.96.12/d/fej6zfxedsrnke/dashboard-expensy-backend?orgId=1&from=now-5m&to=now&timezone=browser&refresh=5s)
+
+### Application Alerts: [Business & Technical Alerts](http://20.174.44.52:9090/alerts)
+
+### Azure Logging: [Azure Monitor](https://portal.azure.com/#@educationazureironhack.onmicrosoft.com/resource/subscriptions/1ca8d3ea-3b84-49f5-afde-7b4ebe3a62eb/resourceGroups/expensyAksRG/providers/Microsoft.ContainerService/managedClusters/expensyAksCluster/monitor)
+
+### Git: [Github repository Link](https://github.com/najjaved/devOps-expense-tracker-app)
 
