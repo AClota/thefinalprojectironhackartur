@@ -13,7 +13,6 @@ Set up the entire DevOps cycle for an expense tracking Web Application using acq
 | MongoDB      | Persistent data storage                          |
 | Redis        | In-memory cache for speed                        |
 
-
 ## Objectives
 1. Apply DevOps practices to build and manage a full-stack application in a production-grade environment
 2. Design and implement a CI/CD pipeline using GitHub Actions to automate application delivery
@@ -23,6 +22,10 @@ Set up the entire DevOps cycle for an expense tracking Web Application using acq
 6. Set up real-time monitoring and dashboards using Prometheus and Grafana
 7. Version control project Architecture diagrams (optional)
 <br>
+
+Here is a simplified deployment architecture with one replica for each microservice for presentation purpose.
+
+![AKS Cluster Architecture](diagrams\Architecture_diagram.png)
 
 ## Pre-requisites
 
@@ -131,8 +134,11 @@ The NGINX Ingress provides an external IP or DNS address (if domain is purchased
 ```kubectl get ingress -n expensy```
 
 Access the app:
-
 http://<INGRESS_IP> or http://<your-linked-domain>
+
+<p align="left">
+  <img src="./diagrams\Microservices_comm.png" alt="Application Architecture" width="600"/>
+</p>
 
 Test the flow: Add expense and see if the expense data is stored.
 
