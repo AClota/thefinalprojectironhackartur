@@ -60,7 +60,7 @@ Remember that environment variables set in your server take precedence (priority
 
 ## Implementation Steps
 ### Step 1 - 🐳 Dockerized Setup
-Containerized the backend and frontend services using Docker.
+Containerized the backend and frontend services using Docker. Each Dockerfile defines the build process and runtime for the respective services.
 To manage and run all services (frontend,backend, redis, and mongodb) together (**for single-machine deployments**), create a docker-compose.yml file in root directory of the Microservices project. It sets up networks and volumes, ensuring seamless communication between containers.
 
 ```docker compose up -d --build```
@@ -73,8 +73,8 @@ Build and run frontend and backend.
 Access the Application:
 Visit http://localhost:3000 to see the expensy app running in a Dockerized setup.
 
-### Step 2- Kubernetes Deployment
-#### 1.1. Automate AKS Cluster deployment via bicep file 
+### Step 2- Infrastructure Setup (IaC)
+Automated AKS Cluster deployment via bicep configs:
  1. Create-rg.bicep
 
  Deploy this at the subscription level:
@@ -99,11 +99,14 @@ If necessary:
 3. Connect to the AKS cluster
 ```az aks get-credentials --resource-group expensyAksRG --name expensyAksCluster ```
 
-#### 1.2 Kubernetes Manifests
-Create separate Deployment and Service YAML files for each microservice and Statefulsets for MongoDB and Redis. 
-Secrets/configs are stored as Kubernetes Secrets and referenced as environment variables.
+Infrastructure files can be found under `/k8s/infra/`.
 
-### Step 3- CI/CD Pipeline
+### Step 3- Kubernetes Deployment
+Create Deployment and Service manifests for each microservice and Statefulsets for MongoDB and Redis. 
+Container images are referenced from Docker Hub and environment variables are passed via **Secrets**.
+Kubernetes manifests can be found under `k8s/`.
+
+### Step 4- CI/CD Pipeline
  GitHub Actions workflow is defined at:
 
 .github/workflows/CI-pipeline.yaml
@@ -111,14 +114,17 @@ Secrets/configs are stored as Kubernetes Secrets and referenced as environment v
 
 This project uses **GitHub Actions** to automate Docker image build, push and deployment to Kubernetes cluster for both frontend and backend.
 
-### Step 4- Test the Deployed App
+### Step 5- Test the Deployed App
 
 Once the CI-CD pipelines runs successfully, confirm:
 
 All Deployments and Pods are running:
 
 ```kubectl get deployments -n expensy```
-```kubectl get pods -n expensy```
+```kubectl get pods,svc -n expensy```
+
+For stateulsets, check if PV is bound:
+```kubectl get pvc -n expensy```
 
 The NGINX Ingress provides an external IP or DNS address (if domain is purchased and linked):
 
@@ -130,20 +136,22 @@ http://<INGRESS_IP> or http://<your-linked-domain>
 
 Test the flow: Add expense and see if the expense data is stored.
 
-### Step 5- Monitoring & Logging
+### Step 6- Monitoring & Logging
 #### Monitoring Stack
  Configured Prometheus to scrape infrastructure and App metrics.
  - Used Prometheus's node-exporter to scrape system level metrics.
  - Used ServiceMonitor to scrap metrics exposed by backend.
 
 #### Grafana dashboards
-Garafana dashboards to visualize infrastructure and App metrics are created and can be found under ```monitoring```
+Garafana dashboards to visualize infrastructure and App metrics are created and can be found under `/monitoring/`
 
 #### Alerting
 Alerts are set up based on business, technical as well as resource usage to proactively respond to issues.
 Prometheus is configured with alerting rules to define the conditions under which alerts should be fired and linked to Grafana dashboards.
+#### Logging
+Cluster nodes and Container logs are available in **Azure Monitor** (AKS).
 
-### Step 6- Security and Compliance
+### Step 7- Security and Compliance
 - Secrets are managed via Kubernetes Secrets
 - IAM roles used for cloud services access following principle of least privilege (PoLP)
 - CI/CD uses Github secrets to store sensitive information
