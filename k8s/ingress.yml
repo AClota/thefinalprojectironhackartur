@@ -1,3 +1,4 @@
+# HTTP ingress, this setup works with/without domain name
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
