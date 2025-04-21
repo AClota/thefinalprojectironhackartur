@@ -1,2 +1,3 @@
 .env
+expensy_backend\.env
 k8s/secrets.yml_
