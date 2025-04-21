@@ -25,7 +25,7 @@ Set up the entire DevOps cycle for an expense tracking Web Application using acq
 
 Here is a simplified deployment architecture with one replica for each microservice for presentation purpose.
 
-![AKS Cluster Architecture](diagrams\Architecture_diagram.png)
+![AKS Cluster Architecture](diagrams/Architecture_diagram.png)
 
 ## Pre-requisites
 
