@@ -68,34 +68,32 @@ Similarly for Grafan, change the type: field from ClusterIP to LoadBalancer. Sav
 # Metrics in Grafana Dashboards
 
 ## Backend Metrics
+Grafana backend dashboard tailored to visualize the following Prometheus metrics:
 1. ```mongo_connection_status``` (Type: gauge)
 2. ```expenses_total``` (Type: counter)
 (Total number of expenses recorded in the DB)
 3. ```http_requests_overall_total``` (Type: counter)
 (Cumulative number of HTTP requests since the app started)
 4. ```http_requests_total{method=..., route=..., statusCode=...}``` </br>
+(HTTP Requests Breakdown) </br>
     Usage: 
     -  Group by statusCode to track errors (rate(http_requests_total{statusCode=~"5.."}[1m]))
     -  Track specific routes or high error endpoints.
-
-### ⚙️ Node.js & Process-Level Metrics
-#### CPU Metrics
-- ```process_cpu_user_seconds_total```
-- ```process_cpu_system_seconds_total```
-- ```process_cpu_seconds_total```
-
-These show how much CPU time (in seconds) the app has used in total (use rate() in Prometheus to get % CPU usage over time).
-
-#### Memory Metrics
-- ```process_resident_memory_bytes```: actual RAM used.
-- ```process_virtual_memory_bytes```: total virtual memory used.
-- ```process_heap_bytes```: JS heap memory allocated.
-- ```nodejs_heap_size_used_bytes``` vs ```nodejs_heap_size_total_bytes```: how much heap is in use vs allocated.
-
+5. ```process_cpu_seconds_total```
+(these show how much CPU time (in seconds) the app has used in total (use rate() in Prometheus to get % CPU usage over time).)
+6. ```process_resident_memory_bytes```
+(actual RAM used )
+7. ```nodejs_heap_size_used_bytes``` vs ```nodejs_heap_size_total_bytes```: how much heap is in use vs allocated.
 Useful for tracking memory leaks or usage over time.
 
-#### Open File Descriptors
-- ```process_open_fds```: number of files/sockets currently open.
-- ```process_max_fds```: system-imposed max.
-
-Important to monitor in case your backend hits limits under load.
+## Infrastructure Metrics
+The nodes dashboard provides an insightful visualization of key system metrics collected via Prometheus. It focuses primarily on CPU, memory, and load metrics for monitoring system health and performance in real-time.
+1. ```(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100```
+   (shows the percentage of memory used on the system) 
+2. ```promhttp_metric_handler_requests_in_flight{job="node-exporter"}```
+   (Number of Scrapes: tracks the number of HTTP requests currently being handled by the Prometheus HTTP handler)
+3. ```process_virtual_memory_bytes{job="node-exporter"}```
+   (represents total virtual memory used by each process)
+4. ```node_load1{instance=~".*"}``` (CPU load average (1m))
+5. ```100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)```
+   (shows the percentage of CPU usage across all cores)
