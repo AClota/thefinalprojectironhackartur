@@ -166,7 +166,7 @@ See ```SECURITY.md``` for more
 
 ---
 ### Links
-#### Deployed App: [Expensy App Deployment on Aks cluster](http://20.233.201.212/)
+#### Deployed App: [Expensy App Deployment on Aks cluster](https://najhack.online/home)
 
 #### Infrastructure Monitoring: [Grafana Dashboard to visualize Nodes Metrics](http://74.162.96.12/d/beiyxmcdom58gb/dashboard-expensy-nodes?orgId=1&from=now-6h&to=now&timezone=browser)
 
