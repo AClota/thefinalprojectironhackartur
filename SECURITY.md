@@ -1,11 +1,11 @@
-# 🔐 Security, IAM.
+# 🔐 Security Policy
 This document outlines the security practices, Identity and Access Management (IAM) approach followed by this project.
 
 ## IAM (Identity and Access Management)
 
 This project follows the principle of **least privilege**, using **Role-Based Access Control (RBAC)** for both Azure and Kubernetes.
 
-### 1. **Role-Based Access Control (RBAC)**
+1. ## Role-Based Access Control (RBAC)
 For Azure resources, we use Azure RBAC to define access levels for service principals, users, and groups.
 
 ### RBAC (Role-Based Access Control) is enabled in the Kubernetes cluster. Verified by running:
@@ -26,14 +26,14 @@ RBAC role assigned to the Nginx Ingress Controller in the expensy namespace:
 This role allows specific operations required by the ingress controller, scoped only to the namespace it manages. Fine-grained permission control ensures least privilege.
 
 
-### 2. **Secret Management**
+2. ## Secret Management
 Sensitive information, such as API keys, credentials, and tokens, is stored securely in:
 
 - **GitHub Secrets**: We store environment-specific secrets like Azure credentials, DockerHub tokens in GitHub Secrets to ensure they are kept safe.
 - **Kubernetes Secrets**: For storing and managing kubernetes related secrets such as database connection strings, database URL.
 
 
-### ✅ To securely configure the secrets in GitHub follow these steps:
+✅ **To securely configure the secrets in GitHub follow these steps**:
 
 1. Go to your **forked repository** on GitHub.
 2. Navigate to **Settings** → **Secrets and variables** → **Actions**.
@@ -104,6 +104,12 @@ Environment variables are used for configuration, and secret values are never ha
 ### 2. **Secrets Encryption**
 All secrets stored in GitHub Actions and Kubernetes secrets are encrypted at rest and are only accessible by authorized users or services. For GitHub Actions secrets, only GitHub Actions workflows have access, based on defined permissions. Secrets in Azure are encrypted using Azure's managed encryption services.
 
+3. ## TLS & Traffic Encryption 
 
+All external-facing traffic to this application is secured using **TLS**. The application runs behind an **NGINX Ingress Controller** in a Kubernetes cluster, with **HTTPS enforced via Ingress TLS settings**.
+
+- TLS certificates are issued via **Certbot** and automatically renewed using a **cron job**.
+- Certificates are stored securely in the cluster as **Kubernetes Secrets**.
+- The Ingress ensures all traffic is redirected to **HTTPS**, preventing unencrypted access.
 
 
