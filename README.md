@@ -1,26 +1,10 @@
 <!-- Final Project: End-to-End DevOps Deployment -->
-# 💸 DevOps Implementation for Expensy - Expense Tracker App
+# DevOps Implementation for Expensy - Expense Tracker App
+Set up the entire DevOps cycle for an expense tracking Web Application using acquired best practices.
 
-Expensy is a full-stack expense tracking application built with **Next.js** (frontend) and **Node.js/Express** (backend), containerized with **Docker**, deployed to **Kubernetes (EKS/AKS)**, and integrated with **Prometheus/Grafana** for monitoring.
+## Expensy Overview
 
-# Objectives :
-1. Apply DevOps practices to build and manage a full-stack application in a production-grade environment
-2. Design and implement a CI/CD pipeline using GitHub Actions to automate application delivery
-3. Containerize frontend and backend services using Docker
-4. Deploy and orchestrate containerized applications using Kubernetes on Azure Kubernetes Service (AKS)
-5. Configure NGINX Ingress for routing external HTTP(S) traffic to microservices
-6. Set up real-time monitoring and dashboards using Prometheus and Grafana
-<br>
-
-# Pre-requisites
-
-- Docker & Docker Compose
-- Node.js & npm
-- MongoDB & Redis (local or containers)
-
-# 🌐 Web Application Overview
-
-The application is an Expense Tracker and consists of multiple services built with different languages and technologies, simulating real-world scenarios where various components interact within a microservices architecture. The application includes:
+[Expensy](https://github.com/Pokfinner/expensy) is a full-stack expense tracking application consisting of multiple services built with different languages and technologies, simulating real-world scenarios where various components interact within a microservices architecture. The application includes:
 
 | Component    | Description                                      |
 |--------------|--------------------------------------------------|
@@ -29,50 +13,55 @@ The application is an Expense Tracker and consists of multiple services built wi
 | MongoDB      | Persistent data storage                          |
 | Redis        | In-memory cache for speed                        |
 
-This sample application is an Expense Tracker with four microservices, a backend built in node, frontend built with Next.js (Node based framework), along with a MongoDB database and Redis caching DB.
 
-[Clone this repository and share it with the team](https://github.com/saurabhd2106/devops-final-project.git)
+## Objectives
+1. Apply DevOps practices to build and manage a full-stack application in a production-grade environment
+2. Design and implement a CI/CD pipeline using GitHub Actions to automate application delivery
+3. Containerize frontend and backend services using Docker
+4. Deploy and orchestrate containerized applications using Kubernetes on Azure Kubernetes Service (AKS) or EKS.
+5. Configure NGINX Ingress for routing external HTTP(S) traffic to microservices
+6. Set up real-time monitoring and dashboards using Prometheus and Grafana
+7. Version control project Architecture diagrams (optional)
+<br>
 
+## Pre-requisites
 
-# 🧪 Local Development Setup
+- Node.js & npm installed
+- MongoDB & Redis running (local or containers)
+- Docker installed
+- Account on the DockerHub registry. This account will be used to host docker images
+- Account with any cloud platform of your choice (AWS, Azure or Hybrid), a free-trial or an account with enough credit
 
-## 1️⃣ Backend
+## Test running the Web App locally
+
+### 1️⃣ Backend
   ``` 
       npm install
       npm run build
   ```
 
-## 2️⃣ Redis Container
+### 2️⃣ Redis Container
  ```docker run --name redis -d -p 6379:6379   redis:latest   redis-server --requirepass someredispassword```
 
-## 3️⃣ MongoDB Container
+### 3️⃣ MongoDB Container
 ```docker run --name mongo -d -p 27017:27017   -e MONGO_INITDB_ROOT_USERNAME=root   -e MONGO_INITDB_ROOT_PASSWORD=example   mongo:latest```
 
-## 4️⃣ Frontend
-```npm run dev```
-
-
-# Step 1 - 🐳 Dockerized Setup:
-This project uses **GitHub Actions** to automate Docker image builds and deployment preparation for both frontend and backend.The steps below will be executed inside a CI pipeline of the project.
-
-## 1.1 Containerize the services (frontend,backend) using Docker.
-
-### Backend(node.js)
+### 4️⃣ Frontend
 ```
-cd expensy_backend
-docker build -t backend:latest .
-docker run -p 8706:8706 backend:latest
+npm install
+npm run dev
 ```
-### Frontend(next.js)
-```
-cd expensy_frontend
-docker build -t frontend:latest .
-docker run -p 3000:3000 frontend:latest
-```
-Visit http://localhost:3000 to see the expensy app running in Docker.
+### Environment Variables
 
-## 1.2 Orchestrate multi-service deployments with Docker Compose (for single-machine deployments).
-To manage and run all services (frontend,backend, redis, and mongodb) together, create a docker-compose.yml file in root directory of the Microservices project. It sets up networks and volumes, ensuring seamless communication between containers.
+- **Frontend**: use `NEXT_PUBLIC_*` for variables that need to be exposed to the browser.
+- **Backend**: store secrets like `DATABASE_URI`, `REDIS_PASSWORD`, etc. in a `.env` file or in your CI/CD pipeline secret store. 
+
+Remember that environment variables set in your server take precedence (priority) over the `.env` files.
+
+## Implementation Steps
+### Step 1 - 🐳 Dockerized Setup
+Containerized the backend and frontend services using Docker.
+To manage and run all services (frontend,backend, redis, and mongodb) together (**for single-machine deployments**), create a docker-compose.yml file in root directory of the Microservices project. It sets up networks and volumes, ensuring seamless communication between containers.
 
 ```docker compose up -d --build```
 
@@ -82,13 +71,10 @@ Start Redis and Mongodb
 Build and run frontend and backend.
 
 Access the Application:
+Visit http://localhost:3000 to see the expensy app running in a Dockerized setup.
 
-Expensy App: http://localhost:3000
-
-
-# Step 2- Kubernetes Deployment-
-
-## 1.1. Cluster deployment via bicep file 
+### Step 2- Kubernetes Deployment
+#### 1.1. Automate AKS Cluster deployment via bicep file 
  1. Create-rg.bicep
 
  Deploy this at the subscription level:
@@ -110,82 +96,71 @@ az deployment group create \
 If necessary:
 ``` ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa```
 
-3. Get credentials for kubectl access
+3. Connect to the AKS cluster
 ```az aks get-credentials --resource-group expensyAksRG --name expensyAksCluster ```
 
-## 1.2 Kubernetes Manifests
-Create separate Deployment and Service YAML files for each microservice. Secrets/configs are stored via Kubernetes Secrets.
+#### 1.2 Kubernetes Manifests
+Create separate Deployment and Service YAML files for each microservice and Statefulsets for MongoDB and Redis. 
+Secrets/configs are stored as Kubernetes Secrets and referenced as environment variables.
 
-For backend specify the environment variables for mongodb and redis-
-
-        ```
-          env:           
-            - name: DATABASE_URI
-              valueFrom:
-                secretKeyRef:
-                  name: expensy-secrets
-                  key: DATABASE_URI
-            - name: REDIS_PORT
-              value: "6379"
-            - name: REDIS_HOST
-              value: "redis-service" # Reference the corresponding service name
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: expensy-secrets
-                  key: redis-password
-        ```
-
-# Step 3- CI/CD Pipeline-
+### Step 3- CI/CD Pipeline
  GitHub Actions workflow is defined at:
 
 .github/workflows/CI-pipeline.yaml
 .github/workflows/CD-pipeline.yaml
 
-# Step 4- Test the project:
+This project uses **GitHub Actions** to automate Docker image build, push and deployment to Kubernetes cluster for both frontend and backend.
+
+### Step 4- Test the Deployed App
 
 Once the CI-CD pipelines runs successfully, confirm:
 
 All Deployments and Pods are running:
 
-```kubectl get deployments```
-```kubectl get pods```
+```kubectl get deployments -n expensy```
+```kubectl get pods -n expensy```
 
-The NGINX Ingress has an external IP or DNS address:
+The NGINX Ingress provides an external IP or DNS address (if domain is purchased and linked):
 
-```kubectl get ingress```
+```kubectl get ingress -n expensy```
 
 Access the app:
 
-http://<INGRESS_IP>
+http://<INGRESS_IP> or http://<your-linked-domain>
 
 Test the flow: Add expense and see if the expense data is stored.
 
-# Step 5- Monitoring & Logging:
-## Monitoring Stack
- Configured Prometheus to scrape metrics from pods
- Used node-exporter to scrape system level metrics
+### Step 5- Monitoring & Logging
+#### Monitoring Stack
+ Configured Prometheus to scrape infrastructure and App metrics.
+ - Used Prometheus's node-exporter to scrape system level metrics.
+ - Used ServiceMonitor to scrap metrics exposed by backend.
 
-## Grafana dashboards:
-Sample visualizations and alerting setup is included.
+#### Grafana dashboards
+Garafana dashboards to visualize infrastructure and App metrics are created and can be found under ```monitoring```
 
+#### Alerting
+Alerts are set up based on business, technical as well as resource usage to proactively respond to issues.
+Prometheus is configured with alerting rules to define the conditions under which alerts should be fired and linked to Grafana dashboards.
 
-# Step 6- Security and Compliance:
-  Secrets are managed via Kubernetes Secrets
-  IAM roles used for cloud access 
-  Mongo/Redis passwords never committed
-  See ```SECURITY.md``` for more
+### Step 6- Security and Compliance
+- Secrets are managed via Kubernetes Secrets
+- IAM roles used for cloud services access following principle of least privilege (PoLP)
+- CI/CD uses Github secrets to store sensitive information
+- Deployed project is accessed via Https using trusted certificate issued via Cert Bot/ Cert manager (works only with proper domain names from hostinger, namecheap etc.)
+See ```SECURITY.md``` for more
 
-## Links
-### Deployed App: [Expensy App Deployment on Aks cluster](http://20.233.201.212/)
+---
+### Links
+#### Deployed App: [Expensy App Deployment on Aks cluster](http://20.233.201.212/)
 
-### Infrastructure Monitoring: [Grafana Dashboard to visualize Nodes Metrics](http://74.162.96.12/d/beiyxmcdom58gb/dashboard-expensy-nodes?orgId=1&from=now-6h&to=now&timezone=browser)
+#### Infrastructure Monitoring: [Grafana Dashboard to visualize Nodes Metrics](http://74.162.96.12/d/beiyxmcdom58gb/dashboard-expensy-nodes?orgId=1&from=now-6h&to=now&timezone=browser)
 
-### Backend Monitoring: [Grafana Dashboard to visualize Backend Metrics](http://74.162.96.12/d/fej6zfxedsrnke/dashboard-expensy-backend?orgId=1&from=now-5m&to=now&timezone=browser&refresh=5s)
+#### Backend Monitoring: [Grafana Dashboard to visualize Backend Metrics](http://74.162.96.12/d/fej6zfxedsrnke/dashboard-expensy-backend?orgId=1&from=now-5m&to=now&timezone=browser&refresh=5s)
 
-### Application Alerts: [Business & Technical Alerts](http://20.174.44.52:9090/alerts)
+#### Application Alerts: [Business & Technical Alerts](http://20.174.44.52:9090/alerts)
 
-### Azure Logging: [Azure Monitor](https://portal.azure.com/#@educationazureironhack.onmicrosoft.com/resource/subscriptions/1ca8d3ea-3b84-49f5-afde-7b4ebe3a62eb/resourceGroups/expensyAksRG/providers/Microsoft.ContainerService/managedClusters/expensyAksCluster/monitor)
+#### Azure Logging: [Azure Monitor](https://portal.azure.com/#@educationazureironhack.onmicrosoft.com/resource/subscriptions/1ca8d3ea-3b84-49f5-afde-7b4ebe3a62eb/resourceGroups/expensyAksRG/providers/Microsoft.ContainerService/managedClusters/expensyAksCluster/monitor)
 
-### Git: [Github repository Link](https://github.com/najjaved/devOps-expense-tracker-app)
+#### Git: [Github repository Link](https://github.com/najjaved/devOps-expense-tracker-app)
 
