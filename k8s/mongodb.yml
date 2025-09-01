@@ -43,7 +43,7 @@ spec:
       resources:
         requests:
           storage: 3Gi
-      storageClassName: managed-csi  # use Azure’s built-in CSI-based storage class
+      storageClassName: standard  # use Azure’s built-in CSI-based storage class
 ---
 apiVersion: v1
 kind: Service
